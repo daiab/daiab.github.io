@@ -1,13 +1,13 @@
 ---
 layout: post
-title: Machine Learning fundament
+title: ml-Machine Learning Fundament
 ---
-Machine Learning fundament
+总结了下自己的学习笔记，都是很基础的机器学习内容，着重谈点小小的理解，少来点公式。写得太low，不要见笑，有空再写个各个算法的代码。hahaha
 
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Math</title>
+<title>MachineLearning</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -1093,15 +1093,16 @@ w^\mathrm{T}x_i+b_i & \le -(1-c_i) &且& y_i = -1， &x_i是类别-1的样本的
 \end{aligned}
 \right.
 $$
- 
+其中$c_i \ge 0$，$c_i$就是一个弹性伸缩变量，允许点跑到两条直线中间来，注意一下，这个$c_i$是对每个样本点，都有一个对应的$c_i$，实际上$\frac{c_i}{|w|}$就是这个点超出直线的距离。然后第二个条件，不能超出这个直线太远，那么就是c_i要尽可能小嘛，也就是要满足$min\sum_i{c_i}$。所以综合上边两个条件，就得到了最后的SVM模型了：
 $$
 \left\{
 \begin{aligned}
 & (w^\mathrm{T}x_i+b_i)y_i \ge 1-c_i\\
-& min{|w| \over 2} + \sum_i{c_i}
+& min{|w| \over 2} + C\sum_i{c_i}
 \end{aligned}
 \right.
-$$</p>
+$$
+其中C是超参数，一个预设的常量，衡量优化$\sum_i{c_i}$时的权重（插一嘴，这种和模型绑定在一块的变量，训练模型之前我们可以随意设定，但是训练过程中不变的量，一般都叫超参数，这个参数指定多大一般没有什么理论依据，经验居多，一般的数值解法就是用GridSearch试探，在多个超参数形成的参数空间里一个点一个点的代入模型，然后训练模型，看取哪个值训练出来的模型好）</p>
 
 </div>
 </div>
@@ -1123,8 +1124,122 @@ $$
 \end{aligned}
 \right.
 $$
-解释一下，这里$<x_i,x_j>$是他们俩的内积，因为往往$x_i$是一个向量，而不是一个标量。然后$\alpha_i,C$是拉格朗日对偶方法中引入的参数，这个参数和原来的$w,b$是关联的，只要求出了这里的$\alpha_i，C$就能求出原始的参数来，所以我们现在解上边这个不等式组就可以了。<br>
-最重要的问题来了，怎么解上边这个方程，你先瞄一眼下边小节的坐标下降法。这里$\alpha_i$是目标函数的自变量，使用坐标下降法就是要轮流优化每个$\alpha_i$，但是这里有一点点特殊性，因为他还有个约束条件$\sum_i^n{\alpha_iy^i} = 0$，我们固定其他的$\alpha$，只优化$\alpha_i$是做不到的，只能最少一对一对的优化，所以我们就挑出其中一对$\alpha_i,\alpha_j$，然后呢，我们可以把$\alpha_j$用$\alpha_i$表示出来，然后再代会原式里边去，就不是可以随便优化$\alpha_i$了，不用管这个约束了吗。</p>
+解释一下，这里$<x_i,x_j>$是他们俩的内积，因为往往$x_i$是一个向量，而不是一个标量。然后$\alpha_i$是拉格朗日对偶方法中引入的参数，这个参数和原来的$w,b$是关联的，只要求出了这里的$\alpha_i$就能求出原始的参数来，所以我们现在解上边这个不等式组就可以了。<br>
+最重要的问题来了，怎么解上边这个方程，你先瞄一眼下边小节的坐标下降法。这里$\alpha_i$是目标函数的自变量，使用坐标下降法就是要轮流优化每个$\alpha_i$，但是这里有一点点特殊性，因为他还有个约束条件$\sum_i^n{\alpha_iy^i} = 0$，我们固定其他的$\alpha$，只优化$\alpha_i$是做不到的，只能最少一对一对的优化，所以我们就挑出其中一对$\alpha_i,\alpha_j$，然后呢，我们可以把$\alpha_j$用$\alpha_i$表示出来，然后再代会原式里边去，就不是可以随便优化$\alpha_i$了，不用管这个约束了吗。可能还是有点没说明白。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我再细说一下怎么求解上边的这个不等式组，首先这个目标优化函数
+$$max\sum_i^n{\alpha_i} - {1 \over 2}\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j<x_i,x_j>}$$
+里边只有$\alpha_i$是变量，这个认同吧，其他的什么$x_i,y_i$乱七八糟的都是已知的，把你的训练数据代入进去即可。完了，有人可能会说不会代入，那我给演示一吧，够细节了吧<br>
+我捏造点数据，假设样本就是下边这样子的：</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#共5个样本，x是三维的</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">y</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[5 0 7]
+ [0 5 5]
+ [2 7 5]
+ [7 6 6]
+ [2 4 6]]
+[ 1 -1  1  1  1]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>样本就做好了，我们算一下这一堆$\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j<x_i,x_j>}$，因为现在$\alpha_i\alpha_j$是未知的，到时候你自己代入进去就好了，所以就需要算$\sum_{i,j}^n{y^iy^j<x_i,x_j>}$<br>
+算起来:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yi_yi</span><span class="o">=</span> <span class="n">y</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">yi_yi</span><span class="p">)</span>
+<span class="n">xi_xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">xi_xi</span><span class="p">)</span>
+<span class="nb">sum</span> <span class="o">=</span> <span class="p">(</span><span class="n">yi_yi</span> <span class="o">*</span> <span class="n">xi_xi</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[ 1 -1  1  1  1]
+ [-1  1 -1 -1 -1]
+ [ 1 -1  1  1  1]
+ [ 1 -1  1  1  1]
+ [ 1 -1  1  1  1]]
+[[ 74  35  45  77  52]
+ [ 35  50  60  60  50]
+ [ 45  60  78  86  62]
+ [ 77  60  86 121  74]
+ [ 52  50  62  74  56]]
+761
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>看懂了吧，是不是很简单，到时候优化$\alpha_i$，就先初始话一个$\mathbf{\alpha}$向量，整个向量求和满足\sum_i^n{\alpha_iy^i} = 0，然后随机从里边挑两个出来，调整他们两的值，然后计算整个$\sum_i^n{\alpha_i} - {1 \over 2}\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j<x_i,x_j>}$，找出能让它最大的$\alpha$值，然后再换一组，不断迭代就ok了。好像再来点就能把算法写出来了，haha</p>
 
 </div>
 </div>
@@ -1999,7 +2114,7 @@ $$\frac{\partial{L}}{\partial{\theta_i}} = \sum_j^n\mathbf{(\theta^\mathrm{T}x_j
 把L1应用到回归模型上叫作Lasso Regression。</p>
 <h4 id="L2-Regularization">L2 Regularization<a class="anchor-link" href="#L2-Regularization">&#182;</a></h4><p>和L1正则化项很类似：$\sum_i^n\theta_i^2$。真的很类似，有一点细微的差别就是最终训练出来的模型，L1更容易得到为0的参数。不细说了。
 把L2应用到回归模型上叫作岭回归。</p>
-<h4 id="cross-validation(&#36825;&#37324;&#20027;&#35201;&#35762;K-fold)">cross validation(&#36825;&#37324;&#20027;&#35201;&#35762;K-fold)<a class="anchor-link" href="#cross-validation(&#36825;&#37324;&#20027;&#35201;&#35762;K-fold)">&#182;</a></h4><h4 id="dropout(&#20027;&#35201;&#29992;&#20110;&#31070;&#32463;&#32593;&#32476;)">dropout(&#20027;&#35201;&#29992;&#20110;&#31070;&#32463;&#32593;&#32476;)<a class="anchor-link" href="#dropout(&#20027;&#35201;&#29992;&#20110;&#31070;&#32463;&#32593;&#32476;)">&#182;</a></h4><p>这块我单独拿出来说了，参考</p>
+<h4 id="cross-validation(&#36825;&#37324;&#20027;&#35201;&#35762;K-fold)">cross validation(&#36825;&#37324;&#20027;&#35201;&#35762;K-fold)<a class="anchor-link" href="#cross-validation(&#36825;&#37324;&#20027;&#35201;&#35762;K-fold)">&#182;</a></h4><h4 id="dropout(&#20027;&#35201;&#29992;&#20110;&#31070;&#32463;&#32593;&#32476;)">dropout(&#20027;&#35201;&#29992;&#20110;&#31070;&#32463;&#32593;&#32476;)<a class="anchor-link" href="#dropout(&#20027;&#35201;&#29992;&#20110;&#31070;&#32463;&#32593;&#32476;)">&#182;</a></h4><p>这块我单独拿出来说了，参考<a href="https://daiab.github.io/nn-dropout/">dropout</a></p>
 
 </div>
 </div>
@@ -2166,7 +2281,22 @@ RU5ErkJggg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="&#28151;&#21512;&#39640;&#26031;&#27169;&#22411;">&#28151;&#21512;&#39640;&#26031;&#27169;&#22411;<a class="anchor-link" href="#&#28151;&#21512;&#39640;&#26031;&#27169;&#22411;">&#182;</a></h3><h3 id="Factor-Analysis(FA)">Factor Analysis(FA)<a class="anchor-link" href="#Factor-Analysis(FA)">&#182;</a></h3><h3 id="Principal-Component-Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)">Principal Component Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)<a class="anchor-link" href="#Principal-Component-Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)">&#182;</a></h3><h3 id="&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;">&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;<a class="anchor-link" href="#&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;">&#182;</a></h3><h3 id="Reinforcement-Learning">Reinforcement Learning<a class="anchor-link" href="#Reinforcement-Learning">&#182;</a></h3>
+<h3 id="&#28151;&#21512;&#39640;&#26031;&#27169;&#22411;">&#28151;&#21512;&#39640;&#26031;&#27169;&#22411;<a class="anchor-link" href="#&#28151;&#21512;&#39640;&#26031;&#27169;&#22411;">&#182;</a></h3><p>这个再找个周末写写，就是应用一下EM算法</p>
+<h3 id="Principal-Component-Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)">Principal Component Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)<a class="anchor-link" href="#Principal-Component-Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)">&#182;</a></h3><p>主成分分析，是一种降维方法，你都能猜出来，降维是为了降低学习难度，提高模型泛化能力。这里有必要说一下降维和特征选择的区别(只是个人理解，不知对否)，降维是只关注于自变量这部分数据(也就是常说的X)，特征选择更多看重自变量对目标值（常说的y）的贡献或者说是影响。比如主成分分析的思想就是找到，自变量中所含信息较多的那部分变量（维度），而信息含量较多差不多就可以理解成，这个变量的数据变化较多（你也可以用信息熵的角度看），不是一成不变，比如你收集了很多人的体重关于身高，年龄的数据，结果发现你的所有年龄数据中，你收集的都是18岁的小朋友，那基本这个变量可以抛弃，没什么用。然后特征选择是啥呢，为了避免刚刚的错误，你重新收集了一部分样本，不是全18岁了，而是从1岁到80岁，各一个样本，均匀分布，很好，经过主成分分析处理，年龄这个变量是能够保留下来的，可是，同样这个变量数据没有卵用，因为体重是有规律随年龄变化的，可是你给我的数据却是，体重和年龄他俩的变化根本不合拍，体重满足一个分布变化，而年龄却是线性变化，应该能理解了吧。然后继续PCA：
+首先注意下，做主成分分析之前一定要先把数据全部归一化，保证各个变量的变化都是平等的，比如身高一般是0.1m的变化，而体重是1千克1千克的变化，显然他们之间的变化幅度不平等。归一化很容易:
+$$x_{normolize}=\frac{x_{old}-\mu}{\frac{1}{n}\sum_i^n{(x_i - \mu)}}$$
+歇会儿再写。。。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Factor-Analysis(FA)">Factor Analysis(FA)<a class="anchor-link" href="#Factor-Analysis(FA)">&#182;</a></h3><h3 id="&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;">&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;<a class="anchor-link" href="#&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;">&#182;</a></h3><h3 id="Reinforcement-Learning">Reinforcement Learning<a class="anchor-link" href="#Reinforcement-Learning">&#182;</a></h3><h3 id="Hidden-Markov-Models">Hidden Markov Models<a class="anchor-link" href="#Hidden-Markov-Models">&#182;</a></h3><p>上边这四个部分，还没来得及写，抽空继续完善</p>
+
 </div>
 </div>
 </div>
