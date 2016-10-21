@@ -1,13 +1,13 @@
 ---
 layout: post
-title: /NN/ Dropout
+title: /ML/ Machine Learning Fundament:Part2
 ---
-Neural Network里边Dropout的结构
+第二部分，聚类算法以及一些零散的算法
 
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Dropout</title>
+<title>[ML]MachineLearning-Part2</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -182,13 +182,19 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dropout">Dropout<a class="anchor-link" href="#Dropout">&#182;</a></h2><blockquote><p><a href="https://github.com/daiab/practice-in-ml/blob/master/paper/nlp/Dropout--A%20Simple%20Way%20to%20Prevent%20Neural%20Networks%20from%20overfiting.pdf">Ref paper : Dropout: A Simple Way to Prevent Neural Networks from Overfitting</a></p>
-</blockquote>
-<p>先回顾一下L1和L2正则化, 就是对node之间边的连接, 进行weight decay，让weight减小接近于零，让整个网络结构更为精简，缩小网络规模，防止overfitting。其中L1正则化 较 L2正则化更能使weight缩减到0.</p>
-<p>同样Dropout可以理解为对原来的节点之间边的权重（weight）,做一次加权，也就是原来边的权重的权重，只不过这个权重是0,1权；同样也可以理解为，我们把神经网络中的部分节点删除了(The term “dropout” refers to dropping out units (hidden and visible) in a neural network.),因为如果两个节点之间进行了dropout，那么这两个节点之间的连接权重就是0，相当于这两个节点之间没有任何联系了。</p>
-<p>参考paper中Dropout的示意图：<br>
-第一个是一个全连接的网络，第二个则类似于去掉了部分节点，结构显得简单多了
-<img src="../images/dropout-demo.png" alt="dropout demo picture"></p>
+<h1 id="Part-2">Part 2<a class="anchor-link" href="#Part-2">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Principal-Component-Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)">Principal Component Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)<a class="anchor-link" href="#Principal-Component-Analysis(PCA&#65292;&#36825;&#37324;&#39034;&#24102;&#35762;&#19979;&#30697;&#38453;&#22855;&#24322;&#20540;&#20998;&#35299;SVD)">&#182;</a></h4><p>主成分分析，是一种降维方法，你都能猜出来，降维是为了降低学习难度，提高模型泛化能力。这里有必要说一下降维和特征选择的区别(只是个人理解，不知对否)，降维是只关注于自变量这部分数据(也就是常说的X)，特征选择更多看重自变量对目标值（常说的y）的贡献或者说是影响。比如主成分分析的思想就是找到，自变量中所含信息较多的那部分变量（维度），而信息含量较多差不多就可以理解成，这个变量的数据变化较多（你也可以用信息熵的角度看），不是一成不变，比如你收集了很多人的体重关于身高，年龄的数据，结果发现你的所有年龄数据中，你收集的都是18岁的小朋友，那基本这个变量可以抛弃，没什么用。然后特征选择是啥呢，为了避免刚刚的错误，你重新收集了一部分样本，不是全18岁了，而是从1岁到80岁，各一个样本，均匀分布，很好，经过主成分分析处理，年龄这个变量是能够保留下来的，可是，同样这个变量数据没有卵用，因为体重是有规律随年龄变化的，可是你给我的数据却是，体重和年龄他俩的变化根本不合拍，体重满足一个分布变化，而年龄却是线性变化，应该能理解了吧。然后继续PCA：
+首先注意下，做主成分分析之前一定要先把数据全部归一化，保证各个变量的变化都是平等的，比如身高一般是0.1m的变化，而体重是1千克1千克的变化，显然他们之间的变化幅度不平等。归一化很容易:
+$$x_{normolize}=\frac{x_{old}-\mu}{\frac{1}{n}\sum_i^n{(x_i - \mu)}}$$
+歇会儿再写。。。</p>
 
 </div>
 </div>
@@ -198,9 +204,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>按照上边说的，dropout可以理解成 对连接节点间边的权重再做一次0,1加权，所以用公式表述就是：
-<img src="../images/dropout-4.png" alt="dropout4">
-可以看出，连接边的权重的权重是一个Berlloulli分布，因此哪些节点之间的边会被drop掉，是随机的(抛色子决定哪些边被drop)</p>
+<h4 id="Factor-Analysis(FA)">Factor Analysis(FA)<a class="anchor-link" href="#Factor-Analysis(FA)">&#182;</a></h4><h4 id="&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;">&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;<a class="anchor-link" href="#&#29420;&#31435;&#20027;&#25104;&#20998;&#20998;&#26512;">&#182;</a></h4><h4 id="Reinforcement-Learning">Reinforcement Learning<a class="anchor-link" href="#Reinforcement-Learning">&#182;</a></h4><h4 id="Hidden-Markov-Models">Hidden Markov Models<a class="anchor-link" href="#Hidden-Markov-Models">&#182;</a></h4><p>上边这四个部分，还没来得及写，抽空继续完善</p>
 
 </div>
 </div>
@@ -210,22 +214,173 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>下边是没有进行dropout时的转换公式
-<img src="../images/dropout-3.png" alt="dropout3"></p>
+<h3 id="&#32858;&#31867;&#20998;&#26512;">&#32858;&#31867;&#20998;&#26512;<a class="anchor-link" href="#&#32858;&#31867;&#20998;&#26512;">&#182;</a></h3><p>这里先说一个概念，监督学习和非监督学习。很好理解，监督学习就是训练样本中已经告诉你了真实的输出是神马，就像我要将身高对性别建模，样本中身高和性别信息都有了，就是监督学习，从字面意思理解，就是我啥都告诉你了，你就按我告诉你的学，监督嘛。而如果样本中只有变量的信息，没有给你真实输出信息，那就是非监督学习，没有给你完整的信息，那就需要你自己去发现规律，比较灵活，你从性别信息了发现了中国性别比例不均衡，也是发现规律了。非监督学习中很重要的一块就是聚类，聚类就是单从样本的分布出发看看样本是不是明显聚集成几个类别。比如你调查了很多人的身高，男女老少的都有。然后你把身高信息统计出来。随便画个图感受一下：</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">height_boy</span> <span class="o">=</span> <span class="mi">173</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">50</span>
+<span class="n">height_girl</span> <span class="o">=</span> <span class="mi">167</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">height_boy</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">height_girl</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>按照上边对dropout的公式描述，那么进行dropout的网络结构就是下边酱紫了：
-<img src="../images/dropout-2.png" alt="dropout2"></p>
+<p>就是把每个样本的身高描点，然后我们很容易就发现，这批样本根据他们的身高信息可以分为两类，一类身高要稍微矮一点，另一类身高稍高点。至于这两类我们该如何命名，到底反映了什么，那就是你的事了，规律是发现了，只不过这里这两类正好就是boy和girl，在我们生活中有确切的含义。<br>
+聚类呢，有两种常见的算法</p>
+<h4 id="K-means">K-means<a class="anchor-link" href="#K-means">&#182;</a></h4><h4 id="&#23618;&#27425;&#32858;&#31867;">&#23618;&#27425;&#32858;&#31867;<a class="anchor-link" href="#&#23618;&#27425;&#32858;&#31867;">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 
 </div>
 </div>
+</div>
+
 </div>
     </div>
   </div>

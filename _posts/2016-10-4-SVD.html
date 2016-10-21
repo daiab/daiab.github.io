@@ -1,13 +1,13 @@
 ---
 layout: post
-title: /NN/ Dropout
+title: /Math/ 矩阵的奇异值分解
 ---
-Neural Network里边Dropout的结构
+说说矩阵的奇异值分解
 
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Dropout</title>
+<title>[Math]SVD</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -182,13 +182,35 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dropout">Dropout<a class="anchor-link" href="#Dropout">&#182;</a></h2><blockquote><p><a href="https://github.com/daiab/practice-in-ml/blob/master/paper/nlp/Dropout--A%20Simple%20Way%20to%20Prevent%20Neural%20Networks%20from%20overfiting.pdf">Ref paper : Dropout: A Simple Way to Prevent Neural Networks from Overfitting</a></p>
-</blockquote>
-<p>先回顾一下L1和L2正则化, 就是对node之间边的连接, 进行weight decay，让weight减小接近于零，让整个网络结构更为精简，缩小网络规模，防止overfitting。其中L1正则化 较 L2正则化更能使weight缩减到0.</p>
-<p>同样Dropout可以理解为对原来的节点之间边的权重（weight）,做一次加权，也就是原来边的权重的权重，只不过这个权重是0,1权；同样也可以理解为，我们把神经网络中的部分节点删除了(The term “dropout” refers to dropping out units (hidden and visible) in a neural network.),因为如果两个节点之间进行了dropout，那么这两个节点之间的连接权重就是0，相当于这两个节点之间没有任何联系了。</p>
-<p>参考paper中Dropout的示意图：<br>
-第一个是一个全连接的网络，第二个则类似于去掉了部分节点，结构显得简单多了
-<img src="../images/dropout-demo.png" alt="dropout demo picture"></p>
+<h3 id="Singularly-Valuable-Decomposition(SVD)">Singularly Valuable Decomposition(SVD)<a class="anchor-link" href="#Singularly-Valuable-Decomposition(SVD)">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>还记得矩阵的特征值分解(EVD)吧，特征值分解说的就是这么一回事：<br>
+一个<strong>方阵A</strong>可以被分解为:$\mathbf{A = V\Lambda V^\mathrm{T}}$（有点记不清了，貌似方阵需要满足点什么条件才能分解）<br>
+其中$\mathbf{\Lambda}$是一个对角矩阵，$\mathbf{V}$是一个正交矩阵。因为正交矩阵满足$V^{-1} = V^\mathrm{T}$， 所以简单把上边的式子变换一下：<br>
+$$
+\mathbf{A = V\Lambda V^\mathrm{T}} = \mathbf{V\Lambda V^{-1}}
+$$
+所以就可以写成：
+$$
+\mathbf{AV = V\Lambda}
+$$
+然后$\Lambda$又是一个对角矩阵，假设它的对角上边的元素是$\lambda_i$，$V$的每一列，列向量是$v_i$，那么上边这个式子就可以改写成这样子了：<br>
+$$
+\mathbf{[Av_1,\cdots, Av_i, \cdots, Av_n] = [\lambda_1v_1, \cdots, \lambda_iv_i, \cdots, \lambda_nv_n]}
+$$
+也就是
+$$
+\mathbf{Av_i = \lambda_iv_i}
+$$
+这不就是求矩阵$A$特征值和特征向量的经典公式吗，$v_i$就是特征向量，$\lambda_i$是对应的特征值。<br>
+所以我们倒着推出来了，要求$A$的特征值分解，很简单吗，把特征值和特征向量一拼就ok了。</p>
 
 </div>
 </div>
@@ -198,9 +220,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>按照上边说的，dropout可以理解成 对连接节点间边的权重再做一次0,1加权，所以用公式表述就是：
-<img src="../images/dropout-4.png" alt="dropout4">
-可以看出，连接边的权重的权重是一个Berlloulli分布，因此哪些节点之间的边会被drop掉，是随机的(抛色子决定哪些边被drop)</p>
+<p>上边是<strong>方阵A</strong>的一种对角矩阵分解。但是如果$A$不是方阵，而是一个一般的矩形矩阵呢？我们也同样倒着推，这样简单。<br>
+先猜测A也可以分解成类似上边的那种形式，但是$V,\Lambda$肯定得有点变化。<br>
+现在假设$A$是一个m×n矩阵，也就是$A_{m×n}$。那么分解后右边的矩阵形状应该是酱紫的：<br>
+$$\mathbf{A_{m×n} = V_{m×*}\Lambda_{*×*} V_{*×n}^\mathrm{T}}$$</p>
 
 </div>
 </div>
@@ -210,8 +233,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>下边是没有进行dropout时的转换公式
-<img src="../images/dropout-3.png" alt="dropout3"></p>
+<p>显然这里两个$V$已经不相等了，而且这个$*$取神马值比较好呢。我们先把把左边的这个$V_{m×*}$记作$U_{m×*}$。然后至于$*$取什么值，站在事后诸葛亮的角度，我就直接写上了(就是保证V和U是方阵，注意下这里$\Lambda$已经不是方阵了):
+$$\mathbf{A_{m×n} = U_{m×m}\Lambda_{m×n} V_{n×n}^\mathrm{T}}$$</p>
 
 </div>
 </div>
@@ -221,11 +244,77 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>按照上边对dropout的公式描述，那么进行dropout的网络结构就是下边酱紫了：
-<img src="../images/dropout-2.png" alt="dropout2"></p>
+<p>然后$U$的列向量记作$u_i$, 类似$V$的列向量记作$v_i$，这样要得到上边的式子，只需要满足:
+$$\mathbf{Av_i = \lambda_iu_i}$$
+再拼凑起来就行了, 不过有人机智的发现了，明明这里$u_i$和$v_i$一个有m列，一个有n列，这样写会有问题。这里你先继续看，下面我再解释</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>说到这里，那到底$v_i,u_i$是what呢？先回头梳理一下，拿$v_i$来说，我们的目标是$v_i$组成的$\mathbf{V}$是正交矩阵，也就是每个$v_i$都是一个空间的基底，两两正交，而且$v_i$的行数，正好等于$\mathbf{A}$的列数。再回忆下上边说到的特征值分解，特征值分解就可以弄出一组基来，他们拼成的矩阵正交。可是难受的地方就是$\mathbf{A}$不是个方阵啊，$\mathbf{A}$不行，那$\mathbf{A^\mathrm{T}A}$是不是方阵了，这个方阵特征值分解出来的特征向量行数是不是和$\mathbf{A}$的列数相同。希望来了，现在我们就把$\mathbf{A^\mathrm{T}A}$特征值分解一下（这里为了避免和上边的符号混淆，用了不同的符号，意义相同）：
+$$\mathbf{A^\mathrm{T}Aw_i = \sigma_i w_i}$$
+给它两边左乘上一个$\mathbf{w^\mathrm{T}}$
+$$\mathbf{w_j^\mathrm{T}A^\mathrm{T}Aw_i = \sigma_i w_j^\mathrm{T}w_i} = 0(w_i相互正交，所以为0)$$
+再变换一下子：
+$$\mathbf{(Aw_j)^\mathrm{T}(Aw_i) = (\sqrt{\sigma_i} w_i)^\mathrm{T}(\sqrt{\sigma_i}w_i)} = 0$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>这就说明$\mathbf{(Aw_i)}$两两之间是正交的，那么就存在一个与$\mathbf{(Aw_i)}$平行的单位向量,同时把$w_i$换成$v_i$，满足：
+$$\mathbf{Av_i}=\mathbf{\left|Av_i\right|u_i}$$
+这不就是我们想要的形式吗？是不是已经搞定了，再进一步，可以知道：
+$$\mathbf{\left|Av_i\right|} = \sqrt{\sigma_i}$$
+所以
+$$\mathbf{u_i}=\frac{1}{\sqrt{\sigma_i}}\mathbf{Av_i}$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>用文字总结一下上边的这个过程，我们只要把$\mathbf{A^\mathrm{T}A}$进行分解，分解出来的特征向量就是矩阵$\mathbf{A}$的列向量，然后特征值开根号了之后就是矩阵$\mathbf{\Lambda}$的对角元素，然后矩阵$\mathbf{U}$的列向量，通过这个公式也可以得出来：
+$$\mathbf{u_i}=\frac{1}{\sqrt{\sigma_i}}\mathbf{Av_i}$$
+到此为止，我们就完全得到了SVD</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>然后再说点额外的，上边我们通过分解$\mathbf{A^\mathrm{T}A}$得到的，实际上也可以通过$\mathbf{AA^\mathrm{T}}$的得到，非常的对称。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
     </div>
   </div>

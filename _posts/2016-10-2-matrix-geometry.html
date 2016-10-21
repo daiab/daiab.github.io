@@ -1,13 +1,13 @@
 ---
 layout: post
-title: /NN/ Dropout
+title: /Math/ Matrix geometry
 ---
-Neural Network里边Dropout的结构
+矩阵的一些几何意义
 
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Dropout</title>
+<title>[Math]Matrix</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -182,13 +182,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dropout">Dropout<a class="anchor-link" href="#Dropout">&#182;</a></h2><blockquote><p><a href="https://github.com/daiab/practice-in-ml/blob/master/paper/nlp/Dropout--A%20Simple%20Way%20to%20Prevent%20Neural%20Networks%20from%20overfiting.pdf">Ref paper : Dropout: A Simple Way to Prevent Neural Networks from Overfitting</a></p>
-</blockquote>
-<p>先回顾一下L1和L2正则化, 就是对node之间边的连接, 进行weight decay，让weight减小接近于零，让整个网络结构更为精简，缩小网络规模，防止overfitting。其中L1正则化 较 L2正则化更能使weight缩减到0.</p>
-<p>同样Dropout可以理解为对原来的节点之间边的权重（weight）,做一次加权，也就是原来边的权重的权重，只不过这个权重是0,1权；同样也可以理解为，我们把神经网络中的部分节点删除了(The term “dropout” refers to dropping out units (hidden and visible) in a neural network.),因为如果两个节点之间进行了dropout，那么这两个节点之间的连接权重就是0，相当于这两个节点之间没有任何联系了。</p>
-<p>参考paper中Dropout的示意图：<br>
-第一个是一个全连接的网络，第二个则类似于去掉了部分节点，结构显得简单多了
-<img src="../images/dropout-demo.png" alt="dropout demo picture"></p>
+<h2 id="&#30697;&#38453;&#30340;&#37096;&#20998;&#29702;&#35299;">&#30697;&#38453;&#30340;&#37096;&#20998;&#29702;&#35299;<a class="anchor-link" href="#&#30697;&#38453;&#30340;&#37096;&#20998;&#29702;&#35299;">&#182;</a></h2><p>很多时候都需要理解矩阵的几何意义，比如特征值分解对应的几何意义是what？乘上一个非奇异矩阵又是什么意思？这里集中说下几何理解，也许有说的不对的地方，请忽视之后再告诉我~<br>
+（首先我说下，下边说的空间是欧几里得空间，欧几里得空间就是坐标轴互相垂直，然后距离就是你直觉中的那种，平方后开根号，不多说了）</p>
 
 </div>
 </div>
@@ -198,9 +193,16 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>按照上边说的，dropout可以理解成 对连接节点间边的权重再做一次0,1加权，所以用公式表述就是：
-<img src="../images/dropout-4.png" alt="dropout4">
-可以看出，连接边的权重的权重是一个Berlloulli分布，因此哪些节点之间的边会被drop掉，是随机的(抛色子决定哪些边被drop)</p>
+<h3 id="&#19968;&#20010;&#21521;&#37327;&#24038;&#20056;&#19968;&#20010;&#38750;&#22855;&#24322;&#30697;&#38453;">&#19968;&#20010;&#21521;&#37327;&#24038;&#20056;&#19968;&#20010;&#38750;&#22855;&#24322;&#30697;&#38453;<a class="anchor-link" href="#&#19968;&#20010;&#21521;&#37327;&#24038;&#20056;&#19968;&#20010;&#38750;&#22855;&#24322;&#30697;&#38453;">&#182;</a></h3><p>从空间中一个基本的向量说起，向量$V$就是一个有向线段，是不是我们马上就可以把$V$写成数组的那种形式表示出来呢？NO！向量$V$的存在，与你用什么方式表示它没有关系，太阳就在我们头顶，没有发明数学的时候，也在我们头顶。所以只有当我们约定好了，以什么为参照的时候，我们才可以把太阳相对这个参照表示出他的位置来。太啰嗦了。所以我们先约定，一组正交坐标轴（任意选，正交即可），假设这组坐标轴正方向的单位向量分别是
+$\mathbf{a_1,a_2,\cdots,a_n}$
+然后参照这组坐标轴，就能把$V$表示出来，假设就是
+$[x_1,x_2,\cdots,x_n]$
+也就是说：
+$$
+V=\begin{bmatrix} \mathbf{a_1} & \mathbf{a_2} & \cdots & \mathbf{a_n} \end{bmatrix}
+\begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}
+= \mathbf{Ax}
+$$</p>
 
 </div>
 </div>
@@ -210,8 +212,13 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>下边是没有进行dropout时的转换公式
-<img src="../images/dropout-3.png" alt="dropout3"></p>
+<p>$\mathbf{x}$就是$V$在这个坐标轴下的坐标，
+然后呢，我们也可以选择另外一组正交且归一化的基组$\mathbf{b_1,b_2,\cdots,b_n}$来表示$V$，同样仿照上边的：
+$$
+V=\begin{bmatrix} \mathbf{b_1} & \mathbf{b_2} & \cdots & \mathbf{b_n} \end{bmatrix}
+\begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix}
+= \mathbf{By}
+$$</p>
 
 </div>
 </div>
@@ -221,8 +228,199 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>按照上边对dropout的公式描述，那么进行dropout的网络结构就是下边酱紫了：
-<img src="../images/dropout-2.png" alt="dropout2"></p>
+<p>上面说明了这么一件事，同一个向量，我们可以选择不同的坐标轴，来表示出来，那么最直接的问题就出来了，在两个不同坐标轴下，同一个向量的坐标什么关系。把上边两个式子变换一下就可以了($\mathbf{B}$的列向量是相互正交的基底，所以它是可逆的，$\mathbf{A}$也一样)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$\mathbf{y=B^{-1}Ax}$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>终于得到需要的结果了，解释一下上边这个式子，首先$\mathbf{B^{-1}A}$这个矩阵肯定也是可逆的，所以换句话说，<strong>如果一个向量$\mathbf{x}$左乘上一个可逆矩阵，意味着什么？是不是意味着，这个矩阵把一个向量在原坐标系里的坐标x变换到了一个新的坐标系里的坐标：y</strong>，而这个新的坐标系的坐标轴是啥呢？
+设$\mathbf{C=B^{-1}A}$<br>
+新的坐标轴就是：
+$$\mathbf{B=AC^{-1}}$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>其实这个地方还有个小细节，使用$\mathbf{B=AC^{-1}}$算出来的新坐标系没错，但是$\mathbf{B}$每个列向量是归一化的向量吗？也就是满足$\mathbf{BB^{-1}=I}$吗？因为$\mathbf{C}$是任意一个可逆矩阵，是不是正交矩阵不好说。所以新坐标系的坐标轴单位向量，还需要你把$\mathbf{B}$的列向量归一化。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#21464;&#25442;&#30340;&#20960;&#31181;&#24418;&#24335;">&#21464;&#25442;&#30340;&#20960;&#31181;&#24418;&#24335;<a class="anchor-link" href="#&#21464;&#25442;&#30340;&#20960;&#31181;&#24418;&#24335;">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>上边说了一个矩阵左乘非奇异矩阵，就是在做变换，但是变换有几种：平移，伸缩，旋转（留意下，变换是指的变换坐标系，而不是向量本身）。这里先看下左乘正交矩阵是什么变换。
+$$\mathbf{y=Ax}$$
+这里$\mathbf{x}，\mathbf{y}$分别是原坐标，新坐标。$\mathbf{A}$是变换矩阵。<br>
+我们先来算算$\mathbf{y^\mathrm{T}y}$是个什么鬼：
+$$\mathbf{y^T y = x^T A^T A x = x^Tx}$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>很神奇吧，居然变换前后，这个向量在两个坐标系下的长短木有变化，是不是只可能是旋转。也许有人会说平移，其实平移，只是向量在新老坐标系中的表示是共线平行的，但是长度是发生变化的。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>然后继续，看看左乘一个对角矩阵(对角元素都非0)会是什么变换，还是上边的符号，只是$\mathbf{A}$是对角矩阵，假设对角元的元素是$\lambda_1,\lambda_2,\cdots,\lambda_n$
+那么$$
+y=
+\begin{bmatrix}
+ \lambda_1 &amp;  &amp;  &amp; \ 
+ &amp;  \lambda_2 &amp;  &amp; \ 
+ &amp;  &amp;  \ddots  &amp; \ 
+ &amp;  &amp;  &amp; \lambda_n
+\end{bmatrix}
+\begin{bmatrix}
+x_1\ 
+x_2\ 
+\vdots \ 
+x_n</p>
+<h1 id="\end{bmatrix}">\end{bmatrix}<a class="anchor-link" href="#\end{bmatrix}">&#182;</a></h1>\begin{bmatrix}
+\lambda_1x_1\\ 
+\lambda_1x_2\\ 
+\vdots \\ 
+\lambda_1x_n
+\end{bmatrix}<p>$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>很直接对不对，就是把原来的$\mathbf{x}$的每个分量都做了一个伸缩，所以左乘对角矩阵就是伸缩变化。又搞定一个。
+接下来看任意一个可逆矩阵，是什么变换呢？
+先特征值分解下，$$A=V\Lambda V^{T}$$
+$V，V^{T}$都是正交矩阵，$\Lambda$是对角矩阵，所以很简单了吧，先做了一个旋转，再做了伸缩，最后又旋转了一下，所以总结起来就是伸缩旋转变换，复合型运动，hahaha。<br>
+这里就不说平移变化了，平移变换需要增加维度，机器学习里边好像没必要管这个，所以就不说了。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#24038;&#20056;&#38750;&#26041;&#38453;">&#24038;&#20056;&#38750;&#26041;&#38453;<a class="anchor-link" href="#&#24038;&#20056;&#38750;&#26041;&#38453;">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>上边说的全都是左乘一个非奇异方阵是怎么回事，下面就说说，左乘非方阵是what？
+假设一个矩形矩阵长这样的$\mathbf{A_{m\times n}}$，然后呢一个矩形矩阵可以进行SVD分解（参考另一篇文章），假设就分解成酱紫了：
+$$\mathbf{A_{m\times n}}=\mathbf{U_{m\times m}\Lambda_{m\times n} V^T_{n\times n}}$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$\mathbf{U,V}$都是正交矩阵，$\mathbf{\Lambda}$是个矩形阵，对角元元素以外元素全为0。为了方便讨论，这里假设$m< n$，然后一个向量在原坐标系中的坐标为$\mathbf{x_{n\times 1}}$，把A左乘到$\mathbf{x}$上，首先是做了一次旋转，这个没的说，但是下一步$\mathbf{\Lambda }$可不是一个方阵。把矩阵画出来就是这样的：</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\mathbf{\Lambda x}
+=
+\begin{bmatrix}
+\lambda_1  &  &  & \cdots  \\ 
+ & \ddots  &  & \cdots \\ 
+ &  & \lambda_m & \cdots
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\ 
+\vdots \\ 
+x_m\\ 
+\vdots 
+\end{bmatrix}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>因为很多地方都是0，所以这个矩阵实际上结果就是这样子的了：
+$$</p>
+<h1 id="\mathbf{\Lambda-x}">\mathbf{\Lambda x}<a class="anchor-link" href="#\mathbf{\Lambda-x}">&#182;</a></h1>\begin{bmatrix}
+\lambda_1  &  & \\ 
+ & \ddots  &   \\ 
+ &  & \lambda_m 
+\end{bmatrix}\begin{bmatrix}
+x_1\\ 
+\vdots \\ 
+x_m
+\end{bmatrix}<p>$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>是不是能看出来了，有$n-m$个维度被丢弃了，然后在剩下来的子空间做了一个伸缩，最后左乘$U$又做了一次旋转。总结起来就是先旋转了一下，然后丢弃了部分维度，然后进行了伸缩，最后再来了一次旋转。好绕啊，终于搞明白了。</p>
 
 </div>
 </div>
