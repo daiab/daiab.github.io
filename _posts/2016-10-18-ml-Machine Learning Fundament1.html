@@ -4,7 +4,6 @@ title: /ML/ Machine Learning Fundament:Part1
 ---
 总结了下自己的学习笔记，都是很基础的机器学习内容，着重谈点小小的理解，少来点公式。写得太low，不要见笑，有空再写个各个算法的代码。hahaha
 
-
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
@@ -1057,10 +1056,10 @@ J3nGGDMxTvKMMWZinOQZY8zEOMkzxpiJcZJnjDET+38geSCh23Hn4gAAAABJRU5ErkJggg==
 假设紧贴着两个不同类别的点的直线分别是:
 $$
 \left\{
-\begin{aligned}
+\begin{align*}
 w^\mathrm{T}x+b &= 1 \\
 w^\mathrm{T}x+b &= -1 \\
-\end{aligned}
+\end{align*}
 \right.
 $$
 然后上边说了，这两根直线要满足两个条件：</p>
@@ -1070,10 +1069,10 @@ $$
 再假设，在直线$w^\mathrm{T}x+b = 1$上侧的点的类别标记$y=1$，直线$w^\mathrm{T}x+b = -1$下侧的点的类别标记$y=-1$。那么第一个条件就是酱紫的了：
 $$
 \left\{
-\begin{aligned}
+\begin{align*}
 w^\mathrm{T}x_i+b_i & \ge 1  &且& y_i = 1, &x_i是类别1的样本点\\
 w^\mathrm{T}x_i+b_i & \le -1 &且& y_i = -1， &x_i是类别-1的样本的\\
-\end{aligned}
+\end{align*}
 \right.
 $$
 把这两个式子统一一下变成了：
@@ -1086,10 +1085,10 @@ $$max(距离d)=max\frac{|(w^\mathrm{T}x+b + 1)-(w^\mathrm{T}x+b - 1)|}{|w|}={2 \
 所以两个条件综合起来就得到我们的模型了：
 $$
 \left\{
-\begin{aligned}
+\begin{align*}
 & (w^\mathrm{T}x_i+b_i)y_i \ge 1\\
 & max{2 \over {|w|}}
-\end{aligned}
+\end{align*}
 \right.
 $$</li>
 </ol>
@@ -1106,19 +1105,19 @@ $$</li>
 一条一套来看，允许落在两条直线中间，那么是不是有:
 $$
 \left\{
-\begin{aligned}
+\begin{align*}
 w^\mathrm{T}x_i+b_i & \ge 1-c_i  &且& y_i = 1, &x_i是类别1的样本点\\
 w^\mathrm{T}x_i+b_i & \le -(1-c_i) &且& y_i = -1， &x_i是类别-1的样本的\\
-\end{aligned}
+\end{align*}
 \right.
 $$
 其中$c_i \ge 0$，$c_i$就是一个弹性伸缩变量，允许点跑到两条直线中间来，注意一下，这个$c_i$是对每个样本点，都有一个对应的$c_i$，实际上$\frac{c_i}{|w|}$就是这个点超出直线的距离。然后第二个条件，不能超出这个直线太远，那么就是c_i要尽可能小嘛，也就是要满足$min\sum_i{c_i}$。所以综合上边两个条件，就得到了最后的SVM模型了：
 $$
 \left\{
-\begin{aligned}
+\begin{align*}
 & (w^\mathrm{T}x_i+b_i)y_i \ge 1-c_i\\
 & min{|w| \over 2} + C\sum_i{c_i}
-\end{aligned}
+\end{align*}
 \right.
 $$
 其中C是超参数，一个预设的常量，衡量优化$\sum_i{c_i}$时的权重（插一嘴，这种和模型绑定在一块的变量，训练模型之前我们可以随意设定，但是训练过程中不变的量，一般都叫超参数，这个参数指定多大一般没有什么理论依据，经验居多，一般的数值解法就是用GridSearch试探，在多个超参数形成的参数空间里一个点一个点的代入模型，然后训练模型，看取哪个值训练出来的模型好）</p>
@@ -1135,15 +1134,13 @@ $$
 这里偷下懒，懒得写对偶问题是如何求解的了，有空再完善，如果你看得费劲可以私下交流嘛，hahaha。
 我就直接写下最后使用拉格朗日对偶方法，将上边的公式变换后的式子：
 $$
-\left\{
-\begin{aligned}
-& max\sum_i^n{\alpha_i} - {1 \over 2}\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j<x_i,x_j>} \\
+\left\{\begin{align*}
+& max\sum_i^n{\alpha_i} - {1 \over 2}\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j(x_i \cdot  x_j)} \\
 & 0 \le \alpha_i \le C \\
 & \sum_i^n{\alpha_iy^i} = 0
-\end{aligned}
-\right.
+\end{align*}\right.
 $$
-解释一下，这里$<x_i,x_j>$是他们俩的内积，因为往往$x_i$是一个向量，而不是一个标量。然后$\alpha_i$是拉格朗日对偶方法中引入的参数，这个参数和原来的$w,b$是关联的，只要求出了这里的$\alpha_i$就能求出原始的参数来，所以我们现在解上边这个不等式组就可以了。<br>
+解释一下，这里$(x_i \cdot  x_j)$是他们俩的内积，因为往往$x_i$是一个向量，而不是一个标量。然后$\alpha_i$是拉格朗日对偶方法中引入的参数，这个参数和原来的$w,b$是关联的，只要求出了这里的$\alpha_i$就能求出原始的参数来，所以我们现在解上边这个不等式组就可以了。<br>
 最重要的问题来了，怎么解上边这个方程，你先瞄一眼下边小节的坐标下降法。这里$\alpha_i$是目标函数的自变量，使用坐标下降法就是要轮流优化每个$\alpha_i$，但是这里有一点点特殊性，因为他还有个约束条件$\sum_i^n{\alpha_iy^i} = 0$，我们固定其他的$\alpha$，只优化$\alpha_i$是做不到的，只能最少一对一对的优化，所以我们就挑出其中一对$\alpha_i,\alpha_j$，然后呢，我们可以把$\alpha_j$用$\alpha_i$表示出来，然后再代会原式里边去，就不是可以随便优化$\alpha_i$了，不用管这个约束了吗。可能还是有点没说明白。</p>
 
 </div>
@@ -1155,7 +1152,7 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>我再细说一下怎么求解上边的这个不等式组，首先这个目标优化函数
-$$max\sum_i^n{\alpha_i} - {1 \over 2}\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j<x_i,x_j>}$$
+$$max\sum_i^n{\alpha_i} - {1 \over 2}\sum_{i,j}^n{\alpha_i\alpha_jy^iy^j(x_i \cdot  x_j)}$$
 里边只有$\alpha_i$是变量，这个认同吧，其他的什么$x_i,y_i$乱七八糟的都是已知的，把你的训练数据代入进去即可。完了，有人可能会说不会代入，那我给演示一吧，够细节了吧<br>
 我捏造点数据，假设样本就是下边这样子的：</p>
 
