@@ -4,6 +4,7 @@ title: /ML/ Model Summary
 ---
 总结一下模型的loss function，regularization，统一描述部分模型
 
+
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
@@ -234,13 +235,17 @@ $$J=-\sum_{i}y_ilogP(y_i=1 \mid  \mathbf{x_i})+(1-y_i)logP(y_i=0 \mid \mathbf{x_
 <p><strong>SVM</strong><br>
 Model：
 $$f(x)\mathbf{}=\mathbf{\theta^{T}x }$$
-Object function：
-$$\left\{\begin{align*}
-& min_{\theta ,c_i} \frac{1}{2}\left \| \mathbf{\theta } \right \|^{2} + C\sum_i^nc_i  \\ 
-& y_i(\theta^T x_i + b) \ge 1-c_i \\
-& c_i \ge 0
+Object function:
+$$
+\left{\begin{align*}
+&amp; min_{\theta ,c_i} \frac{1}{2}\left | \mathbf{\theta } \right |^{2}</p>
+<ul>
+<li>C\sum_i^nc_i  \ 
+&amp; y_i(\theta^T x_i + b) \ge 1-c_i \
+&amp; c_i \ge 0
 \end{align*}\right.
-$$</p>
+$$</li>
+</ul>
 
 </div>
 </div>
@@ -605,12 +610,16 @@ $$-ylogP(y=1 \mid  \mathbf{x})+(1-y)logP(y=0 \mid \mathbf{x})=log(1+e^{-z\mathbf
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>SVM</strong><br>
 svm原始的Object function其实不是酱紫的：
-$$\left\{\begin{align*}
-& min_{\theta ,c_i} \frac{1}{2}\left \| \mathbf{\theta } \right \|^{2} + C\sum_i^n{c_i} \\ 
-& y_i(\theta^T x_i + b) \ge 1-c_i \\
-& c_i \ge 0
+$$
+\left{\begin{align*}
+&amp; min_{\theta ,c_i} \frac{1}{2}\left | \mathbf{\theta } \right |^{2}</p>
+<ul>
+<li>C\sum_i^nc_i  \ 
+&amp; y_i(\theta^T x_i + b) \ge 1-c_i \
+&amp; c_i \ge 0
 \end{align*}\right.
-$$</p>
+$$</li>
+</ul>
 
 </div>
 </div>
@@ -621,11 +630,15 @@ $$</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>从这个式子表达的意思来看，是说要让每个点跑到这两根直线$\mathbf{\theta^Tx}+b=\pm 1$中间去的距离不能太大了，超出一丝丝没问题，多了就怒了。但是原式的Object function表达的意思是跑到这俩直线中间去的点的个数不能太多了，一个是限制的距离，一个是限制的点个数，还是有点区别的。然后原始的Object function是长这样的：
-$$\left\{\begin{align*}
-& min_{\theta ,c_i} \frac{1}{2}\left \| \mathbf{\theta } \right \|^{2} + C\sum_i^nis(y_i(\theta^T x_i + b) <  1)  \\ 
-& y_i(\theta^T x_i + b) \ge 1
+$$
+\left{\begin{align*}
+&amp; min_{\theta ,c_i} \frac{1}{2}\left | \mathbf{\theta } \right |^{2}</p>
+<ul>
+<li>C\sum_i^nis(y_i(\theta^T x_i + b) &lt;  1)  \ 
+&amp; y_i(\theta^T x_i + b) \ge 1
 \end{align*}\right.
-$$</p>
+$$</li>
+</ul>
 
 </div>
 </div>
@@ -662,13 +675,17 @@ $$1 - y(\theta^T x + b) < c 且 c > 0$$</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>把这几个条件综合起来是不是就变成熟悉的这个了？
-$$\left\{\begin{align*}
-& min_{\theta ,c_i} \frac{1}{2}\left \| \mathbf{\theta } \right \|^{2} + C\sum_i^nc_i  \\ 
-& y_i(\theta^T x_i + b) \ge 1-c_i \\
-& c_i \ge 0
+$$
+\left{\begin{align*}
+&amp; min_{\theta ,c_i} \frac{1}{2}\left | \mathbf{\theta } \right |^{2}</p>
+<ul>
+<li>C\sum_i^nc_i  \ 
+&amp; y_i(\theta^T x_i + b) \ge 1-c_i \
+&amp; c_i \ge 0
 \end{align*}\right.
 $$
-我勒个去，终于说明白了，好辛苦啊。</p>
+我勒个去，终于说明白了，好辛苦啊。</li>
+</ul>
 
 </div>
 </div>
