@@ -304,25 +304,25 @@ $$\mathbf{y^T y = x^T A^T A x = x^Tx}$$</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>然后继续，看看左乘一个对角矩阵(对角元素都非0)会是什么变换，还是上边的符号，只是$\mathbf{A}$是对角矩阵，假设对角元的元素是$\lambda_1,\lambda_2,\cdots,\lambda_n$
-那么$$y=\begin{bmatrix}
- \lambda_1 &  &  & \\ 
- &  \lambda_2 &  & \\ 
- &  &  \ddots  & \\ 
- &  &  & \lambda_n
+那么$$
+y=
+\begin{bmatrix}
+ \lambda_1 &amp;  &amp;  &amp; \ 
+ &amp;  \lambda_2 &amp;  &amp; \ 
+ &amp;  &amp;  \ddots  &amp; \ 
+ &amp;  &amp;  &amp; \lambda_n
 \end{bmatrix}
 \begin{bmatrix}
-x_1\\ 
-x_2\\ 
-\vdots \\ 
-x_n
-\end{bmatrix}
-=\begin{bmatrix}
+x_1\ 
+x_2\ 
+\vdots \ 
+x_n</p>
+<h1 id="\end{bmatrix}">\end{bmatrix}<a class="anchor-link" href="#\end{bmatrix}">&#182;</a></h1>\begin{bmatrix}
 \lambda_1x_1\\ 
 \lambda_1x_2\\ 
 \vdots \\ 
 \lambda_1x_n
-\end{bmatrix}
-$$</p>
+\end{bmatrix}<p>$$</p>
 
 </div>
 </div>
@@ -377,7 +377,9 @@ $$\mathbf{A_{m\times n}}=\mathbf{U_{m\times m}\Lambda_{m\times n} V^T_{n\times n
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-$$\mathbf{\Lambda x}=
+$$
+\mathbf{\Lambda x}
+=
 \begin{bmatrix}
 \lambda_1  &  &  & \cdots  \\ 
  & \ddots  &  & \cdots \\ 
@@ -399,18 +401,16 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>因为很多地方都是0，所以这个矩阵实际上结果就是这样子的了：
-$$\mathbf{\Lambda x}
-=\begin{bmatrix}
+$$</p>
+<h1 id="\mathbf{\Lambda-x}">\mathbf{\Lambda x}<a class="anchor-link" href="#\mathbf{\Lambda-x}">&#182;</a></h1>\begin{bmatrix}
 \lambda_1  &  & \\ 
  & \ddots  &   \\ 
  &  & \lambda_m 
-\end{bmatrix}
-\begin{bmatrix}
+\end{bmatrix}\begin{bmatrix}
 x_1\\ 
 \vdots \\ 
 x_m
-\end{bmatrix}
-$$</p>
+\end{bmatrix}<p>$$</p>
 
 </div>
 </div>
