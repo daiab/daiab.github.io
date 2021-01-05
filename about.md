@@ -8,5 +8,3 @@ permalink: /about/
 
 ### Contact me
 
-Email: [daiab_piao@163.com](mailto:daiab_piao@163.com)  
-Wechat: daiabpiao
